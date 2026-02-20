@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP Central Odisha Distribution Limited - Application Status</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0056b3; /* TPCODL Blue */
+            --primary-dark: #004494;
+            --success: #28a745; /* Green */
+            --text-dark: #202124;
+            --text-light: #5f6368;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --line-color: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Google Sans', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .top-info-bar {
+            background-color: var(--primary-dark);
+            text-align: center;
+            padding: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo img {
+            height: 55px;
+            background: #0056b3;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .lang-select {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-family: 'Google Sans', sans-serif;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .lang-select option {
+            color: #333;
+        }
+
+        /* --- Main Content --- */
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px; /* Wider for desktop timeline */
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        /* --- Search View --- */
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #dadce0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Google Sans', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        .helper-text {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            background-color: blue; /* Fallback */
+            background: linear-gradient(135deg, var(--primary), #007bff);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* --- Timeline View (Desktop Default) --- */
+        #result-view {
+            display: none;
+            width: 100%;
+        }
+
+        /* Wrapper for the line and steps */
+        .timeline-wrapper {
+            position: relative;
+            margin: 60px 0 40px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        /* The Background Line (Gray) */
+        .timeline-line-bg {
+            position: absolute;
+            top: 20px; /* Half of circle height (40px) */
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--line-color);
+            z-index: 0;
+            border-radius: 4px;
+        }
+
+        /* The Progress Line (Green) */
+        .timeline-line-fill {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 4px;
+            width: 0%; /* JS will animate this */
+            background-color: var(--success);
+            z-index: 0;
+            border-radius: 4px;
+            transition: width 1s ease, height 1s ease;
+        }
+
+        /* Individual Step */
+        .step {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 14%; /* 100 / 7 steps */
+            cursor: default;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border: 3px solid var(--line-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        /* Completed State */
+        .step.completed .step-circle {
+            background-color: var(--success);
+            border-color: var(--success);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+        }
+
+        /* Active State */
+        .step.active .step-circle {
+            background-color: var(--white);
+            border-color: var(--success);
+            color: var(--success);
+            transform: scale(1.1);
+            box-shadow: 0 0 0 5px rgba(40, 167, 69, 0.2);
+        }
+
+        .step-text {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: 'Google Sans', sans-serif;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #eff6ff;
+        }
+
+        /* --- MOBILE RESPONSIVE DESIGN (Vertical Timeline) --- */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 5%;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+
+            /* Switch Flex Direction to Column */
+            .timeline-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+                margin: 20px 0;
+                padding-left: 10px; /* Space for the circles */
+                position: relative;
+            }
+
+            /* Adjust The Lines to be Vertical */
+            .timeline-line-bg {
+                width: 4px;
+                height: 100%;
+                top: 0;
+                left: 28px; /* Center with circle (40px width / 2 + padding) */
+            }
+
+            .timeline-line-fill {
+                width: 4px;
+                height: 0%; /* JS will animate height */
+                top: 0;
+                left: 28px;
+            }
+
+            /* Adjust Step Items */
+            .step {
+                flex-direction: row;
+                width: 100%;
+                margin-bottom: 30px;
+                text-align: left;
+                align-items: center; /* Align circle and text center vertically */
+            }
+
+            .step:last-child {
+                margin-bottom: 0;
+            }
+
+            .step-circle {
+                min-width: 40px; /* Prevent shrinking */
+                margin-right: 20px;
+            }
+
+            .step-text {
+                margin-top: 0;
+                font-size: 0.95rem; /* Slightly larger on mobile for readability */
+                font-weight: 600;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="top-info-bar">
+            Toll Free No. - 1912 / 1800 345 7122 &nbsp;|&nbsp; Mail us: customercare@tpcentralodisha.com
+        </div>
+        <div class="navbar">
+            <div class="logo">
+                <a href="#">
+                    <img src="https://www.tpcentralodisha.com/images/logo.png" alt="TPCODL Logo">
+                </a>
+            </div>
+            <select class="lang-select" id="languageSwitcher">
+                <option value="en">English</option>
+                <option value="or">Odia</option>
+            </select>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            
+            <!-- SEARCH VIEW -->
+            <div id="search-view">
+                <h2 data-i18n="searchTitle">Application Status</h2>
+                <div class="search-box">
+                    <label for="regInput" data-i18n="regLabel">Registration No.</label>
+                    <input type="text" id="regInput" placeholder="Enter Registration No.">
+                    <div class="helper-text" data-i18n="demoHint">Try Demo IDs: 001, 002, 003</div>
+                    <button class="btn-primary" onclick="handleSearch()" data-i18n="proceedBtn">Check Status</button>
+                </div>
+            </div>
+
+            <!-- RESULT VIEW -->
+            <div id="result-view">
+                <h2 data-i18n="resultTitle">Application Status</h2>
+                
+                <div class="timeline-wrapper">
+                    <!-- Lines -->
+                    <div class="timeline-line-bg"></div>
+                    <div class="timeline-line-fill" id="progressLine"></div>
+
+                    <!-- Steps (Injected via JS) -->
+                    <div id="stepsContainer" style="display:contents;"></div>
+                </div>
+
+                <button class="btn-outline" onclick="goBack()" data-i18n="backBtn">Back to Search</button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- Data & Configuration ---
+        const stepsData = [
+            { id: 1, key: "step1", en: "Registration Approved", or: "ପଞ୍ଜୀକରଣ ଅନୁମୋଦିତ" },
+            { id: 2, key: "step2", en: "Net Metering Application Submitted", or: "ନେଟ୍ ମିଟରିଂ ଆବେଦନ ଦାଖଲ" },
+            { id: 3, key: "step3", en: "Field Verification/Feasibility Successful", or: "କ୍ଷେତ୍ର ଯାଞ୍ଚ ସଫଳ" },
+            { id: 4, key: "step4", en: "Net Metering Agreement Submitted", or: "ନେଟ୍ ମିଟରିଂ ଚୁକ୍ତିନାମା ଦାଖଲ" },
+            { id: 5, key: "step5", en: "Work Completion Report Submitted", or: "କାର୍ଯ୍ୟ ସମାପ୍ତି ରିପୋର୍ଟ ଦାଖଲ" },
+            { id: 6, key: "step6", en: "Joint Site Inspection Completed", or: "ମିଳିତ ସାଇଟ୍ ଯାଞ୍ଚ ସମାପ୍ତ" },
+            { id: 7, key: "step7", en: "Meter Installation & Commissioning", or: "ମିଟର ସ୍ଥାପନ ଏବଂ କାର୍ଯ୍ୟକ୍ଷମ" }
+        ];
+
+        // Demo Database
+        const db = {
+            "001": 2, // User at Step 2
+            "002": 4, // User at Step 4
+            "003": 7  // User Finished
+        };
+
+        const translations = {
+            en: {
+                searchTitle: "Track Your Application",
+                regLabel: "Enter Registration Number",
+                demoHint: "Try Demo IDs: 001, 002, 003",
+                proceedBtn: "Check Status",
+                resultTitle: "Application Status",
+                backBtn: "Back to Search"
+            },
+            or: {
+                searchTitle: "ଆପଣଙ୍କର ଆବେଦନ ଟ୍ରାକ୍ କରନ୍ତୁ",
+                regLabel: "ପଞ୍ଜୀକରଣ ନମ୍ବର ଦିଅନ୍ତୁ",
+                demoHint: "ଡେମୋ ଆଇଡି: ୦୦୧, ୦୦୨, ୦୦୩",
+                proceedBtn: "ସ୍ଥିତି ଯାଞ୍ଚ କରନ୍ତୁ",
+                resultTitle: "ଆବେଦନ ସ୍ଥିତି",
+                backBtn: "ଫେରି ଯାଆନ୍ତୁ"
+            }
+        };
+
+        let currentLang = "en";
+
+        // --- Functions ---
+
+        function init() {
+            renderSteps();
+        }
+
+        // Render HTML structure for steps
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = "";
+            
+            stepsData.forEach((step, index) => {
+                const stepNum = index + 1;
+                const html = `
+                    <div class="step" id="step-${stepNum}">
+                        <div class="step-circle">${stepNum}</div>
+                        <div class="step-text" data-key="${step.key}">
+                            ${currentLang === 'en' ? step.en : step.or}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function handleSearch() {
+            const input = document.getElementById('regInput').value.trim();
+            
+            if(!db[input]) {
+                alert(currentLang === 'en' ? "Invalid ID. Try 001, 002, 003" : "ଭୁଲ ଆଇଡି. ୦୦୧, ୦୦୨, ୦୦୩ ଚେଷ୍ଟା କରନ୍ତୁ");
+                return;
+            }
+
+            const activeStep = db[input];
+            showResult(activeStep);
+        }
+
+        function showResult(activeStep) {
+            document.getElementById('search-view').style.display = 'none';
+            document.getElementById('result-view').style.display = 'block';
+
+            // Reset classes
+            for(let i=1; i<=7; i++) {
+                const el = document.getElementById(`step-${i}`);
+                const circle = el.querySelector('.step-circle');
+                
+                el.classList.remove('active', 'completed');
+                
+                if (i < activeStep) {
+                    el.classList.add('completed');
+                    // Checkmark SVG
+                    circle.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                } else if (i === activeStep) {
+                    el.classList.add('active');
+                    circle.innerHTML = i;
+                } else {
+                    circle.innerHTML = i;
+                }
+            }
+
+            // Animate Line
+            setTimeout(() => {
+                updateProgressLine(activeStep);
+            }, 100);
+        }
+
+        function updateProgressLine(activeStep) {
+            const line = document.getElementById('progressLine');
+            const totalSteps = stepsData.length;
+            
+            // Calculate percentage based on (activeStep - 1) / (totalSteps - 1)
+            // But visually we want the line to stop at the active circle center
+            const percent = ((activeStep - 1) / (totalSteps - 1)) * 100;
+
+            const isMobile = window.innerWidth <= 768;
+
+            if(isMobile) {
+                line.style.width = '4px';
+                line.style.height = `${percent}%`;
+            } else {
+                line.style.height = '4px';
+                line.style.width = `${percent}%`;
+            }
+        }
+
+        function goBack() {
+            document.getElementById('result-view').style.display = 'none';
+            document.getElementById('search-view').style.display = 'block';
+            document.getElementById('regInput').value = '';
+            
+            // Reset Line
+            const line = document.getElementById('progressLine');
+            line.style.width = '0%';
+            line.style.height = '0%';
+        }
+
+        // Language Switcher Logic
+        document.getElementById('languageSwitcher').addEventListener('change', (e) => {
+            currentLang = e.target.value;
+            
+            // Update Static Text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[currentLang][key]) {
+                    el.innerText = translations[currentLang][key];
+                }
+            });
+
+            // Update Steps Text
+            document.querySelectorAll('.step-text').forEach(el => {
+                const key = el.getAttribute('data-key');
+                const stepObj = stepsData.find(s => s.key === key);
+                if(stepObj) {
+                    el.innerText = currentLang === 'en' ? stepObj.en : stepObj.or;
+                }
+            });
+        });
+
+        // Initialize
+        init();
+
+    </script>
+</body>
+</html>
